@@ -1,16 +1,18 @@
 'use strict';
 const cardsModel = require('../models/cards');
 
-module.exports = (req, res) => {
-	const card = req.body;
-	try {
-		cardsModel.addCard(card);
-		//console.log(cardsModel.checkLuhn(card.cardNumber));
-		res.status(201).json(card);
-	} catch (err) {
-		console.log(err.message);
+module.exports = async(ctx) => {
+    console.log(ctx.request.body);
+    const card = ctx.request.body;
+    try {
+    	await cardsModel.addCard(card);
+    	ctx.status = 201;
+    	ctx.body = card;
+	}
+	catch (err){
+        console.log(err.message);
 		console.log(err.code);
-		res.status(err.code).send(err.message);
+        ctx.throw(err.code,err.message);
 	}
 };
 
